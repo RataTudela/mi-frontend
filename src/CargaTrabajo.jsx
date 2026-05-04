@@ -15,7 +15,7 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
   ];
 
   const [form, setForm] = useState({
-    periodo: "",
+    nombreTarea: "", 
     horas_asignadas: 0,
     usuario: { id_usuario: usuarioId }
   });
@@ -33,13 +33,18 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
   const manejarSeleccion = (e) => {
     const tarea = tareasSistema.find(t => t.id === parseInt(e.target.value));
     if (tarea) {
-      setForm({ ...form, periodo: `[${tarea.proyecto}] ${tarea.nombre}`, horas_asignadas: tarea.horas });
+      setForm({ 
+        ...form, 
+        nombreTarea: `[${tarea.proyecto}] ${tarea.nombre}`, 
+        horas_asignadas: tarea.horas 
+      });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-        const horasPrevias = editandoId ? cargas.find(c => c.id_carga === editandoId).horas_asignadas : 0;
+    const horasPrevias = editandoId ? cargas.find(c => c.id_carga === editandoId).horas_asignadas : 0;
+    
     if ((totalHoras - horasPrevias) + parseInt(form.horas_asignadas) > 40) {
       alert("Error: Esta asignación supera el límite de 40 horas semanales.");
       return;
@@ -59,7 +64,7 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
   const prepararEdicion = (c) => {
     setEditandoId(c.id_carga);
     setForm({
-      periodo: c.periodo,
+      nombreTarea: c.nombreTarea, 
       horas_asignadas: c.horas_asignadas,
       usuario: { id_usuario: usuarioId }
     });
@@ -67,7 +72,7 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
 
   const cancelarEdicion = () => {
     setEditandoId(null);
-    setForm({ periodo: "", horas_asignadas: 0, usuario: { id_usuario: usuarioId } });
+    setForm({ nombreTarea: "", horas_asignadas: 0, usuario: { id_usuario: usuarioId } });
   };
 
   return (
@@ -78,7 +83,6 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
             <h5 className="modal-title fw-bold">📊 Gestión de Carga: {nombreUsuario}</h5>
             <button type="button" className="btn-close btn-close-white" onClick={alCerrar}></button>
           </div>
-          
           <div className="modal-body p-4">
             <div className="mb-4">
               <div className="d-flex justify-content-between small fw-bold mb-1">
@@ -94,8 +98,9 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
               <div className="col-md-7">
                 <label className="small fw-bold text-muted text-uppercase">Tarea / Proyecto</label>
                 {editandoId ? (
-                  <input type="text" className="form-control shadow-sm" value={form.periodo} 
-                         onChange={e => setForm({...form, periodo: e.target.value})} />
+                  <input type="text" className="form-control shadow-sm" 
+                         value={form.nombreTarea} 
+                         onChange={e => setForm({...form, nombreTarea: e.target.value})} />
                 ) : (
                   <select className="form-select shadow-sm" onChange={manejarSeleccion} required>
                     <option value="">-- Seleccionar Tarea --</option>
@@ -115,7 +120,6 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
                 {editandoId && <button type="button" className="btn btn-outline-secondary" onClick={cancelarEdicion}>X</button>}
               </div>
             </form>
-
             <table className="table table-hover align-middle border">
               <thead className="table-dark small">
                 <tr>
@@ -127,7 +131,7 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
               <tbody>
                 {cargas.map(c => (
                   <tr key={c.id_carga}>
-                    <td className="fw-bold">{c.periodo}</td>
+                    <td className="fw-bold">{c.nombreTarea}</td> 
                     <td className="text-center"><span className="badge bg-primary">{c.horas_asignadas}h</span></td>
                     <td className="text-end pe-3">
                       <button className="btn btn-sm btn-outline-warning me-2" onClick={() => prepararEdicion(c)}>✎</button>
