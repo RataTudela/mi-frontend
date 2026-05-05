@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Disponibilidades from "./Disponibilidad.jsx";
 import CargaTrabajo from "./CargaTrabajo.jsx"; 
-import "./css/CssImagenFondo.css"; 
 
 const API_URL = "http://localhost:8081/api/usuarios/usuario";
 
