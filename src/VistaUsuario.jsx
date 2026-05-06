@@ -103,7 +103,6 @@ export default function VistaUsuario() {
                       <div className="p-3 border rounded-3 bg-light">
                         <div className="d-flex justify-content-between">
                           <strong>Motivo: {dispo.motivo}</strong>
-                          <span className="badge bg-success">Activo</span>
                         </div>
                         <hr className="my-2" />
                         <small className="text-muted d-block">
