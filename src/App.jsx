@@ -1,8 +1,9 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom'; // Añadimos Link
 import Usuarios from "./Usuarios.jsx"; 
 import InicioSesion from "./InicioSesion.jsx"; 
 import VistaUsuario from "./VistaUsuario.jsx"; 
+import VerEquipo from "./VerEquipo.jsx"; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ProtectedRoute = ({ children, allowedRole }) => {
@@ -13,11 +14,13 @@ const ProtectedRoute = ({ children, allowedRole }) => {
     }
     return children;
 };
+
 function App() {
   const handleLogout = () => {
     localStorage.removeItem("usuarioActual");
     window.location.href = '/login';
   };
+
   return (
     <Router>
       <Routes>
@@ -29,12 +32,13 @@ function App() {
               <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
                 <div className="container">
                   <a className="navbar-brand fw-bold" href="#">
-                    InnovaTech <span className="text-primary">|</span> Gestión</a>
+                    InnovaTech <span className="text-primary">|</span> Gestión Admin
+                  </a>
                   <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>Cerrar Sesión</button>
                 </div>
               </nav>
               <div className="container-fluid p-0">
-                 <Usuarios />
+                  <Usuarios />
               </div>
             </div>
           </ProtectedRoute>
@@ -44,13 +48,36 @@ function App() {
             <div className="min-vh-100">
               <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
                 <div className="container">
-                  <a className="navbar-brand fw-bold" href="#">InnovaTech <span className="text-primary">|</span> Mi Perfil</a>
-                  <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
-                    Cerrar Sesión
-                  </button>
+                  <div className="d-flex align-items-center">
+                    <a className="navbar-brand fw-bold me-4" href="#">InnovaTech</a>
+                    <div className="navbar-nav">
+                      <Link className="nav-link active" to="/mi-perfil">Mi Perfil</Link>
+                      <Link className="nav-link" to="/equipo">Ver Equipo</Link>
+                    </div>
+                  </div>
+                  <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>Cerrar Sesión</button>
                 </div>
               </nav>
               <VistaUsuario />
+            </div>
+          </ProtectedRoute>
+        } />
+        <Route path="/equipo" element={
+          <ProtectedRoute>
+            <div className="min-vh-100">
+              <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+                <div className="container">
+                  <div className="d-flex align-items-center">
+                    <a className="navbar-brand fw-bold me-4" href="#">InnovaTech</a>
+                    <div className="navbar-nav">
+                      <Link className="nav-link" to="/mi-perfil">Mi Perfil</Link>
+                      <Link className="nav-link active" to="/equipo">Ver Equipo</Link>
+                    </div>
+                  </div>
+                  <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>Cerrar Sesión</button>
+                </div>
+              </nav>
+              <VerEquipo />
             </div>
           </ProtectedRoute>
         } />
