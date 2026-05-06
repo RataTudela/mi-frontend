@@ -1,6 +1,6 @@
 .img-fondo-login {
     background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), 
-                      url('../assets/fondo_inicio.jpg'); 
+                      url('../assets/FondoIni.jpg'); 
     background-size: cover; 
     background-position: center;
     background-repeat: no-repeat; 
@@ -28,7 +28,7 @@
 .login-box img {
     display: block; 
     margin: 0 auto 20px; 
-    width: 120px; 
+    width: 200px; 
     height: auto;
 }
 
@@ -39,7 +39,6 @@
     font-weight: bold;
 }
 
-/* Ajustes para inputs y botones para que se vean modernos */
 .login-box .form-control {
     border-radius: 8px;
     padding: 10px;

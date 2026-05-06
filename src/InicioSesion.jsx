@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./css/CssInicioSesion.css";
+import logoInnova from "./assets/Logo.png";
 
 export default function InicioSesion() {
   const [email, setEmail] = useState('');
@@ -9,53 +10,54 @@ export default function InicioSesion() {
   const [passwordError, setPasswordError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    
-    setEmailError('');
-    setPasswordError('');
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  setEmailError('');
+  setPasswordError('');
 
-    if (!email) { setEmailError("Ingresa tu correo"); return; }
-    if (!password) { setPasswordError("Ingresa tu contraseña"); return; }
-
-    try {
-      const response = await fetch(
-        `http://localhost:8081/api/usuarios/login?email=${email}&contrasena=${password}`
-      );
-
-      if (!response.ok) {
-        setPasswordError("Credenciales inválidas. Inténtalo de nuevo.");
-        return;
-      }
-
-      const user = await response.json();
-      
-      localStorage.setItem("usuarioActual", JSON.stringify(user));
-
-      navigate("/usuarios");
-
-    } catch (error) {
-      console.error("Error en login:", error);
-      setPasswordError("No se pudo conectar con el servidor.");
+  try {
+    const response = await fetch("http://localhost:8081/api/usuarios/usuario/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        contraseña: password 
+      }),
+    });
+    if (!response.ok) {
+      setPasswordError("Correo o contraseña incorrectos");
+      return;
     }
-  };
+    const user = await response.json();
+    localStorage.setItem("usuarioActual", JSON.stringify(user));
+    if (user.rol === "ADMIN") {
+        navigate("/usuarios");
+    } else {
+        localStorage.removeItem("usuarioActual"); 
+        alert("Acceso denegado: Solo los administradores pueden entrar aquí.");
+    }
+  } catch (error) {
+    console.error("Error en login:", error);
+    setPasswordError("Error al conectar con el servidor");
+  }
+};
 
   return (
     <div className="img-fondo-login">
       <div className="login-box shadow-lg">
         <div className="text-center mb-4">
-          <img src="/assets/Logo InnovaTech.png" alt="Logo GameCloud" className="logo-login" />
-          <h2 className="fw-bold text-dark">InnovaTech</h2>
-          <p className="text-muted small">Ingresa a tu cuenta</p>
+          <img src={logoInnova} alt="Logo InnovaTech" className="logo-login"/>
+          <h2 className="fw-bold text-dark">Ingresa a tu cuenta</h2>
         </div>
-        
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label small fw-bold text-secondary">CORREO ELECTRÓNICO</label>
             <input
               type="email"
               className="form-control form-control-lg fs-6"
-              placeholder="admin@gamecloud.com"
+              placeholder="admin@InnovaTech.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -77,17 +79,6 @@ export default function InicioSesion() {
           <button type="submit" className="btn btn-primary btn-lg w-100 fw-bold mb-3 shadow-sm">
             Iniciar Sesión
           </button>
-
-          <div className="text-center">
-            <span className="text-muted small">¿No tienes acceso? </span>
-            <a 
-              onClick={() => navigate('/Registro')} 
-              className="text-primary small fw-bold" 
-              style={{ cursor: 'pointer', textDecoration: 'none' }}
-            >
-              Contacta a Soporte
-            </a>
-          </div>
         </form>
       </div>
     </div>
