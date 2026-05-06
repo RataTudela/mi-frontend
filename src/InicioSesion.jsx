@@ -35,15 +35,13 @@ const handleSubmit = async (event) => {
     if (user.rol === "ADMIN") {
         navigate("/usuarios");
     } else {
-        localStorage.removeItem("usuarioActual"); 
-        alert("Acceso denegado: Solo los administradores pueden entrar aquí.");
+        navigate("/mi-perfil");
     }
   } catch (error) {
     console.error("Error en login:", error);
     setPasswordError("Error al conectar con el servidor");
   }
 };
-
   return (
     <div className="img-fondo-login">
       <div className="login-box shadow-lg">
