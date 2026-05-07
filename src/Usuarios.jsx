@@ -33,7 +33,7 @@ export default function Usuarios() {
     if (nuevoRol === "ADMIN") {
       const yaExisteAdmin = users.some(u => u.rol === "ADMIN" && u.id_usuario !== selectedId);
       if (yaExisteAdmin) {
-        alert("⚠️ Error: El sistema ya cuenta con un Administrador.");
+        alert("El sistema ya cuenta con un Administrador.");
         return false;
       }
     }
