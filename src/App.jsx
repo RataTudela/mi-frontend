@@ -32,7 +32,7 @@ function App() {
               <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
                 <div className="container">
                   <a className="navbar-brand fw-bold" href="#">
-                    InnovaTech <span className="text-primary">|</span> Gestión Admin
+                    InnovaTech <span className="text-primary">|</span> Gestión
                   </a>
                   <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>Cerrar Sesión</button>
                 </div>
@@ -48,14 +48,14 @@ function App() {
             <div className="min-vh-100">
               <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
                 <div className="container">
-                  <div className="d-flex align-items-center">
-                    <a className="navbar-brand fw-bold me-4" href="#">InnovaTech</a>
-                    <div className="navbar-nav">
-                      <Link className="nav-link active" to="/mi-perfil">Mi Perfil</Link>
-                      <Link className="nav-link" to="/equipo">Ver Equipo</Link>
-                    </div>
+                  <a className="navbar-brand fw-bold" href="#">InnovaTech <span className="text-primary">|</span> Mi Perfil</a>
+                  <div className="d-flex gap-2">
+                    <Link to="/equipo" className="btn btn-outline-primary btn-sm">Ver Equipo</Link>
+                    <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
+                        Cerrar Sesión
+                    </button>
                   </div>
-                  <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>Cerrar Sesión</button>
+
                 </div>
               </nav>
               <VistaUsuario />
@@ -67,14 +67,11 @@ function App() {
             <div className="min-vh-100">
               <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
                 <div className="container">
-                  <div className="d-flex align-items-center">
-                    <a className="navbar-brand fw-bold me-4" href="#">InnovaTech</a>
-                    <div className="navbar-nav">
-                      <Link className="nav-link" to="/mi-perfil">Mi Perfil</Link>
-                      <Link className="nav-link active" to="/equipo">Ver Equipo</Link>
-                    </div>
+                  <a className="navbar-brand fw-bold" href="#">InnovaTech <span className="text-primary">|</span> Equipo</a>
+                  <div className="d-flex gap-2">
+                    <Link to="/mi-perfil" className="btn btn-outline-primary btn-sm">Mi Perfil</Link>
+                    <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>Cerrar Sesión</button>
                   </div>
-                  <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>Cerrar Sesión</button>
                 </div>
               </nav>
               <VerEquipo />
@@ -86,4 +83,5 @@ function App() {
     </Router>
   );
 }
+
 export default App;

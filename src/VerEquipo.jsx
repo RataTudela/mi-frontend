@@ -10,16 +10,19 @@ export default function VerEquipo() {
     fetchEquipo();
   }, []);
 
- const fetchEquipo = async () => {
+  const fetchEquipo = async () => {
     try {
-        const res = await axios.get("http://localhost:8081/api/usuarios/usuario");
-        setUsuarios(res.data);
+      const res = await axios.get("http://localhost:8081/api/usuarios/usuario");
+      setUsuarios(Array.isArray(res.data) ? res.data : []);
     } catch (error) {
-        console.error("Error al traer el equipo:", error);
+      console.error("Error al traer el equipo:", error);
+      setUsuarios([]);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-    };
+  };
+
+  if (loading) return <div className="container py-5 text-center">Cargando equipo...</div>;
 
   return (
     <div className="bg-vista-usuario">
@@ -27,8 +30,10 @@ export default function VerEquipo() {
         <h2 className="fw-bold mb-4">Visibilidad del Equipo</h2>
         <div className="row g-4">
           {usuarios.map((user) => {
-            const totalH = user.cargas.reduce((acc, curr) => acc + curr.horas_asignadas, 0);
+            const listaCargas = user.cargasTrabajo || []; 
+            const totalH = listaCargas.reduce((acc, curr) => acc + (curr.horas_asignadas || 0), 0);
             const porcentaje = Math.min((totalH / 40) * 100, 100);
+
             return (
               <div className="col-md-6 col-lg-4" key={user.id_usuario}>
                 <div className="card-perfil p-4 shadow-sm h-100 border-0">
@@ -37,8 +42,8 @@ export default function VerEquipo() {
                       <h5 className="fw-bold mb-0">{user.nombre}</h5>
                       <span className="badge bg-dark mb-2">{user.rol}</span>
                     </div>
-                    <div className={`rounded-circle`} style={{
-                      width: '15px', height: '15px', 
+                    <div style={{
+                      width: '15px', height: '15px', borderRadius: '50%',
                       backgroundColor: totalH >= 40 ? '#dc3545' : totalH >= 30 ? '#ffc107' : '#198754'
                     }}></div>
                   </div>
@@ -55,7 +60,7 @@ export default function VerEquipo() {
                   <div className="mt-4">
                     <h6 className="small fw-bold text-uppercase">Tareas actuales:</h6>
                     <ul className="list-unstyled">
-                      {user.cargas.length > 0 ? user.cargas.map(c => (
+                      {listaCargas.length > 0 ? listaCargas.map(c => (
                         <li key={c.id_carga} className="small border-bottom py-1">
                           📌 {c.nombreTarea} <span className="text-muted">({c.horas_asignadas}h)</span>
                         </li>
