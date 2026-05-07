@@ -188,7 +188,7 @@ export default function Usuarios() {
           </>
         )}
         {verDispo && <Disponibilidades usuarioId={userActivo.id_usuario} nombreUsuario={userActivo.nombre} alCerrar={() => setVerDispo(false)} />}
-        {verCarga && <CargaTrabajo usuarioId={userActivo.id_usuario} nombreUsuario={userActivo.nombre} alCerrar={() => setVerCarga(false)} />}
+        {verCarga && <CargaTrabajo usuarioId={userActivo.id_usuario} nombreUsuario={userActivo.nombre} estadoUsuario={userActivo.estado} alCerrar={() => setVerCarga(false)} />}
       </div>
   );
 }

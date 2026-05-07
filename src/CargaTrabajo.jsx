@@ -4,7 +4,7 @@ import axios from "axios";
 const API_CARGA = "http://localhost:8081/api/usuarios/carga_trabajo";
 const API_PROYECTOS = "http://localhost:8081/api/proyectos"; 
 
-export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
+export default function CargaTrabajo({ usuarioId, nombreUsuario, estadoUsuario,alCerrar }) {
   const [cargas, setCargas] = useState([]);
   const [tareasReales, setTareasReales] = useState([]); 
   const [totalHoras, setTotalHoras] = useState(0);
@@ -46,11 +46,18 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("DEBUG - estadoUsuario:", estadoUsuario);
+    const estadoLimpio = estadoUsuario ? estadoUsuario.toString().trim().toLowerCase() : "";
+
+    if (estadoLimpio === "inactivo") {
+      alert(`El profesional ${nombreUsuario} está INACTIVO y no puede recibir tareas.`);
+      return; 
+    }
     setLoading(true);
 
     const horasPrevias = editandoId ? cargas.find(c => c.id_carga === editandoId).horas_asignadas : 0;
     if ((totalHoras - horasPrevias) + parseInt(form.horas_asignadas) > 40) {
-      alert("⚠️ Error: Esta asignación supera el límite de 40 horas semanales.");
+      alert("Esta asignación supera el límite de 40 horas semanales.");
       setLoading(false);
       return;
     }
@@ -60,7 +67,6 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
         await axios.put(`${API_CARGA}/${editandoId}`, form);
       } else {
         await axios.post(API_CARGA, form);
-
         if (idTareaSeleccionada) {
           const dataAsignacion = {
             tarea: { idTarea: parseInt(idTareaSeleccionada) },
@@ -71,7 +77,6 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
           await axios.post(`${API_PROYECTOS}/asignacion`, dataAsignacion);
         }
       }
-      
       alert("Asignación exitosa.");
       cancelarEdicion();
       cargarDatos();
@@ -81,7 +86,7 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, alCerrar }) {
     } finally {
       setLoading(false);
     }
-  };
+};
 
   const prepararEdicion = (c) => {
     setEditandoId(c.id_carga);
