@@ -38,7 +38,7 @@ function App() {
                 </div>
               </nav>
               <div className="container-fluid p-0">
-                 <Usuarios />
+                  <Usuarios />
               </div>
             </div>
           </ProtectedRoute>
