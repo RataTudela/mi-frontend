@@ -1,0 +1,19 @@
+.bg-vista-usuario {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
+                      url('../assets/fondoVistaUsu.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: calc(100vh - 56px);
+    padding-top: 20px;
+}
+
+.card-perfil, .card-stats, .card-tareas, .card-dispo {
+    background: white;
+    border-radius: 15px;
+    border: none;
+    transition: transform 0.3s ease;
+}
+
+.card-stats:hover {
+    transform: translateY(-5px);
+}
