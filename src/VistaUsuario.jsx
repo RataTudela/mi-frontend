@@ -43,7 +43,7 @@ export default function VistaUsuario() {
         <div className="row g-4">
           <div className="col-12">
             <div className="card-perfil p-4 shadow-sm border-0">
-              <h2 className="fw-bold">Panel de {usuarioLocal.nombre} 👋</h2>
+              <h2 className="fw-bold">Panel de {usuarioLocal.nombre}</h2>
               <p className="text-muted m-0">
                 <span className="badge bg-dark me-2">{usuarioLocal.rol}</span> 
                 ID Empleado: #{usuarioLocal.id_usuario}
