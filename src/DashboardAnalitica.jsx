@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-// La URL apunta al Gateway (8081) y el prefijo /api/analisis que configuraste
+// La URL apunta al Gateway (8081) y el prefijo /api/analisis
 const API_ANALISIS = "http://localhost:8081/api/analisis";
 
 export default function DashboardAnalitica() {
-  const [datos, setDatos] = useState({ kpis: [], metricas: [], reportes: [] });
+  // 1. Ajuste del estado inicial (usando reportes_recientes)
+  const [datos, setDatos] = useState({ kpis: [], metricas: [], reportes_recientes: [] });
   const [cargando, setCargando] = useState(true);
 
-  // Función para obtener la data de tu FastAPI
+  // Función para obtener la data consolidada
   const cargarDashboard = async () => {
     try {
       setCargando(true);
-      // Endpoint que consolida la información
       const res = await axios.get(`${API_ANALISIS}/dashboard`);
       setDatos(res.data);
     } catch (error) {
@@ -22,14 +22,30 @@ export default function DashboardAnalitica() {
     }
   };
 
-  // Función para disparar la recolección de datos (Sincronización)
+  // 2. Modificación de la función de sincronización para enviar JSON al Backend
   const ejecutarSincronizacion = async () => {
     try {
-      await axios.post(`${API_ANALISIS}/reportes/periodico`);
-      alert("Analítica actualizada: Se han recalculado las métricas de proyectos.");
-      cargarDashboard();
+      setCargando(true);
+      
+      // Datos que "vienen del frontend" (puedes reemplazarlos por una llamada al MS de Proyectos después)
+      const datosProyectosParaEnviar = [
+        { id_proyecto: 1, tareas_completadas: 2, tareas_totales: 10 },
+        { id_proyecto: 5, tareas_completadas: 8, tareas_totales: 10 },
+        { id_proyecto: 10, tareas_completadas: 3, tareas_totales: 12 }
+      ];
+
+      // Enviamos el array directamente en el cuerpo del POST
+      await axios.post(`${API_ANALISIS}/reportes/periodico`, datosProyectosParaEnviar);
+      
+      alert("Analítica actualizada: Se han recalculado las métricas con datos del sistema.");
+      
+      // Recargamos el dashboard para ver los nuevos resultados
+      await cargarDashboard();
     } catch (error) {
-      alert("Error al sincronizar con los microservicios de origen.");
+      console.error("Error al sincronizar:", error);
+      alert("Error al enviar datos de origen al microservicio de analítica.");
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -115,7 +131,8 @@ export default function DashboardAnalitica() {
             </div>
             <div className="card-body p-0">
               <div className="list-group list-group-flush">
-                {datos.reportes.map((rep) => (
+                {/* AJUSTE AQUÍ: Mapeo de reportes_recientes */}
+                {datos.reportes_recientes && datos.reportes_recientes.map((rep) => (
                   <div key={rep.id_reporte} className="list-group-item bg-dark text-white border-secondary p-3">
                     <div className="d-flex justify-content-between">
                       <small className="text-info fw-bold">{new Date(rep.fecha_generacion).toLocaleDateString()}</small>
