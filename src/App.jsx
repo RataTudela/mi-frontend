@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Usuarios from "./Usuarios.jsx"; 
 import InicioSesion from "./InicioSesion.jsx"; 
-import DashboardAnalitica from "./DashboardAnalitica.jsx"; 
+import DashboardAnalitica from "./DashboardAnalitica.jsx"; // Integrado de felix/sandbox
 import VistaUsuario from "./VistaUsuario.jsx"; 
 import VerEquipo from "./VerEquipo.jsx"; 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -43,7 +43,7 @@ function App() {
                     InnovaTech <span className="text-primary">|</span> Gestión
                   </a>
                   <div className="d-flex gap-2">
-                    {/* Botón para navegar a tu microservicio desde la vista de ADMIN */}
+                    {/* Integración felix/sandbox: Botón para navegar a tu microservicio */}
                     <Link to="/analitica" className="btn btn-primary btn-sm">Ver Analítica</Link>
                     <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>Cerrar Sesión</button>
                   </div>
@@ -56,7 +56,7 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* TU MÓDULO: Monitoreo y Analítica (Protegido para ADMIN) */}
+        {/* TU MÓDULO: Monitoreo y Analítica (Protegido para ADMIN) - Integrado de felix/sandbox */}
         <Route path="/analitica" element={
           <ProtectedRoute allowedRole="ADMIN">
             <div className="min-vh-100">
@@ -78,7 +78,7 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Vista de Perfil de Usuario (Cualquier rol logueado) */}
+        {/* Vista de Perfil de Usuario (Cualquier rol logueado) - Base de origin/main */}
         <Route path="/mi-perfil" element={
           <ProtectedRoute>
             <div className="min-vh-100">
@@ -96,7 +96,7 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Vista de Equipo (Cualquier rol logueado) */}
+        {/* Vista de Equipo (Cualquier rol logueado) - Base de origin/main */}
         <Route path="/equipo" element={
           <ProtectedRoute>
             <div className="min-vh-100">
