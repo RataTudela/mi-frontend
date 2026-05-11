@@ -13,6 +13,9 @@ Antes de ejecutar el proyecto, es necesario descargar Node:
 luego de instalar simplemente poner 
 npm install
 
+Importante hacer correr los microservicios antes y el gateway luego en la terminal solo poner:
+npm run dev
+
 para entrar desde el login al admin poner 
 
 hola@gmail.com
