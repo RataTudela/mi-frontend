@@ -1,3 +1,27 @@
+Componente Frontend Sistema de Gestión
+
+Este es el componente de interfaz de usuario desarrollado como un paquete NPM.
+
+Tecnologías y Entorno
+Primero que nada y mas importante instalar node.js
+Framework: React.
+
+Guía de Inicio Rápido
+
+1. Instalación de Dependencias
+Antes de ejecutar el proyecto, es necesario descargar Node:
+luego de instalar simplemente poner 
+npm install
+
+para entrar desde el login al admin poner 
+
+hola@gmail.com
+felixdel2004
+
+y para entrar al de un usuario cualquiera:
+maria.garcia@innovatech.com
+Informatica.25
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
