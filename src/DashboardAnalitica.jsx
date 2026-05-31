@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "axios"; // Importación limpia y estándar de Axios
 
 // Configuración de URLs a través del Gateway (puerto 8081)
 const API_ANALISIS = "http://localhost:8081/api/analisis";
@@ -26,30 +26,41 @@ export default function DashboardAnalitica() {
   /**
    * Función de sincronización: 
    * 1. Obtiene datos reales desde el MS de Proyectos (Java)
-   * 2. Envía esos datos al MS de Analítica (Python) para procesar
+   * 2. Aplica Traductor de Seguridad para normalizar diferencias de nombrado (camelCase vs snake_case)
+   * 3. Envía esos datos normalizados al MS de Analítica (Python) para procesar de forma segura
    */
   const ejecutarSincronizacion = async () => {
     try {
       setCargando(true);
       
-      // PASO 1: Obtener datos REALES desde el microservicio de Proyectos (Java)
-      // Usamos el nuevo endpoint que creamos: /resumen-tareas
+      // PASO 1: Obtener los datos reales desde el MS de Proyectos (Java)
       const resProyectos = await axios.get(`${API_PROYECTOS}/resumen-tareas`);
-      const datosReales = resProyectos.data; 
+      const datosOriginales = resProyectos.data; 
 
-      if (!datosReales || datosReales.length === 0) {
+      // 🔍 RASTREADOR DE DIAGNÓSTICO
+      console.log("--- DATOS CRUDOS DE JAVA (PROYECTOS) ---");
+      console.log(datosOriginales);
+
+      if (!datosOriginales || datosOriginales.length === 0) {
         alert("No hay proyectos con tareas para sincronizar.");
         setCargando(false);
         return;
       }
 
-      // PASO 2: Enviar los datos reales al microservicio de Analítica (Python)
-      // La estructura coincide: {id_proyecto, tareas_completadas, tareas_totales}
-      await axios.post(`${API_ANALISIS}/reportes/periodico`, datosReales);
+      // TRADUCTOR DE SEGURIDAD AUTOMÁTICO (Sin valores harcodeados)
+      const datosNormalizados = datosOriginales.map(p => ({
+        id_proyecto: p.id_proyecto || p.idProyecto,
+        // Si Java envía el dato lo toma, si viene undefined o null asegura un 0
+        tareas_completadas: Number(p.tareas_completadas ?? p.tareasCompletadas ?? 0),
+        tareas_totales: Number(p.tareas_totales ?? p.tareasTotales ?? 0)
+      }));
+
+      // PASO 2: Enviar los datos ya normalizados y limpios a tu microservicio de Analítica (Python)
+      await axios.post(`${API_ANALISIS}/reportes/periodico`, datosNormalizados);
       
-      alert(`Sincronización Exitosa: Se procesaron ${datosReales.length} proyectos con datos reales.`);
+      alert(`Sincronización Exitosa: Se procesaron ${datosNormalizados.length} proyectos con datos reales.`);
       
-      // PASO 3: Recargar el dashboard para visualizar métricas actualizadas
+      // PASO 3: Recargar el dashboard para visualizar las métricas actualizadas
       await cargarDashboard();
     } catch (error) {
       console.error("Error al sincronizar:", error);
@@ -130,7 +141,7 @@ export default function DashboardAnalitica() {
                     ></div>
                   </div>
                   <div className="d-flex justify-content-between mt-1">
-                    <small className="text-muted">Tareas: {m.tareas_completadas} / {m.tareas_totales}</small>
+                    <div className="small text-muted">Tareas: {m.tareas_completadas} / {m.tareas_totales}</div>
                     <small className="text-muted">
                       Cálculo: {m.fecha_calculo ? new Date(m.fecha_calculo).toLocaleDateString() : 'Reciente'}
                     </small>
