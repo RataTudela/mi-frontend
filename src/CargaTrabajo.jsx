@@ -4,7 +4,7 @@ import axios from "axios";
 const API_CARGA = "http://localhost:8081/api/usuarios/carga_trabajo";
 const API_PROYECTOS = "http://localhost:8081/api/proyectos"; 
 
-export default function CargaTrabajo({ usuarioId, nombreUsuario, estadoUsuario,alCerrar }) {
+export default function CargaTrabajo({ usuarioId, nombreUsuario, estadoUsuario, alCerrar }) {
   const [cargas, setCargas] = useState([]);
   const [tareasReales, setTareasReales] = useState([]); 
   const [totalHoras, setTotalHoras] = useState(0);
@@ -15,6 +15,7 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, estadoUsuario,a
   const [form, setForm] = useState({
     nombreTarea: "", 
     horas_asignadas: 0,
+    idTarea: null,
     usuario: { id_usuario: usuarioId }
   });
 
@@ -23,7 +24,7 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, estadoUsuario,a
       const resCarga = await axios.get(`${API_CARGA}/usuario/${usuarioId}`);
       setCargas(resCarga.data);
       setTotalHoras(resCarga.data.reduce((acc, curr) => acc + curr.horas_asignadas, 0));
-            const resTareas = await axios.get(`${API_PROYECTOS}/tareas`);
+      const resTareas = await axios.get(`${API_PROYECTOS}/tareas`);
       setTareasReales(resTareas.data);
     } catch (e) { 
       console.error("Error cargando datos integrados:", e); 
@@ -31,6 +32,7 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, estadoUsuario,a
   };
 
   useEffect(() => { cargarDatos(); }, [usuarioId]);
+
   const manejarSeleccion = (e) => {
     const id = e.target.value;
     setIdTareaSeleccionada(id);
@@ -39,14 +41,14 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, estadoUsuario,a
       setForm({ 
         ...form, 
         nombreTarea: `[${tarea.proyecto.nombre}] ${tarea.nombre}`, 
-        horas_asignadas: tarea.horasAproximadas || 0 
+        horas_asignadas: tarea.horasAproximadas || 0,
+        idTarea: tarea.idTarea
       });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("DEBUG - estadoUsuario:", estadoUsuario);
     const estadoLimpio = estadoUsuario ? estadoUsuario.toString().trim().toLowerCase() : "";
 
     if (estadoLimpio === "inactivo") {
@@ -86,13 +88,14 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, estadoUsuario,a
     } finally {
       setLoading(false);
     }
-};
+  };
 
   const prepararEdicion = (c) => {
     setEditandoId(c.id_carga);
     setForm({
       nombreTarea: c.nombreTarea, 
       horas_asignadas: c.horas_asignadas,
+      idTarea: c.idTarea,
       usuario: { id_usuario: usuarioId }
     });
   };
@@ -100,8 +103,9 @@ export default function CargaTrabajo({ usuarioId, nombreUsuario, estadoUsuario,a
   const cancelarEdicion = () => {
     setEditandoId(null);
     setIdTareaSeleccionada("");
-    setForm({ nombreTarea: "", horas_asignadas: 0, usuario: { id_usuario: usuarioId } });
+    setForm({ nombreTarea: "", horas_asignadas: 0, idTarea: null, usuario: { id_usuario: usuarioId } });
   };
+
   return (
     <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 1070 }} onClick={alCerrar}>
       <div className="modal-dialog modal-lg modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
